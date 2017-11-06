@@ -1,9 +1,40 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
+import { BrowserRouter } from 'react-router-dom'
 
-import Root from './clients/Root';
-import registerServiceWorker from './registerServiceWorker';
-import './index.css';
+import configureStore from './store'
+import registerServiceWorker from './registerServiceWorker'
 
-ReactDOM.render(<Root />, document.getElementById('root'));
-registerServiceWorker();
+import App from './shared/App'
+import './index.less'
+
+import { AppContainer } from 'react-hot-loader';
+
+// Let the reducers handle initial state
+const initialState = {}
+const store = configureStore(initialState)
+
+const render = Component => {
+	ReactDOM.render(
+		<AppContainer>
+		<Provider store={store}>
+			<BrowserRouter>
+				<Component />
+			</BrowserRouter>
+		</Provider>
+		</AppContainer>
+	, document.getElementById('root')
+	)
+	
+}
+
+
+
+render(App)
+
+if (module.hot) {
+	module.hot.accept('./shared/App', () => { render(App) })
+}
+
+registerServiceWorker()
